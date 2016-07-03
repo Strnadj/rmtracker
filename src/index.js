@@ -5,29 +5,29 @@ import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
 const path = require('path')
 
 // To use async await
-require("babel-core/register");
-require("babel-polyfill");
+if (process.env.NODE_ENV === 'development') {
+  require('babel-core/register')
+  require('babel-polyfill')
+}
 
 // Install devtools into console
 const installExtensions = async () => {
-  if (process.env.NODE_ENV === 'development') {
-    const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
-    const extensions = [
-      'REACT_DEVELOPER_TOOLS',
-      'REDUX_DEVTOOLS'
-    ];
-    for (const name of extensions) {
-      try {
-        await installer.default(installer[name]);
-      } catch (e) {} // eslint-disable-line
-    }
+  const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
+  const extensions = [
+    'REACT_DEVELOPER_TOOLS',
+    'REDUX_DEVTOOLS'
+  ];
+  for (const name of extensions) {
+    try {
+      await installer.default(installer[name]);
+    } catch (e) {} // eslint-disable-line
   }
 };
 
 // Tray icon
 let appIcon = null
 let createTray = () => {
-  const iconName = process.platform === 'win32' ? 'windows-icon.png' : 'assets/logo.png'
+  const iconName = process.platform === 'win32' ? 'windows-icon.png' : 'assets/iconTemplate.png'
   const iconPath = path.join(__dirname, iconName)
   appIcon = new Tray(iconPath)
 
@@ -83,7 +83,10 @@ let createWindow = () => {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 app.on('ready', async () => {
-  await installExtensions();
+  if (process.env.NODE_ENV === 'development') {
+    await installExtensions();
+  }
+
   createWindow();
   createTray();
 })

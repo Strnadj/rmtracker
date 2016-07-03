@@ -8,7 +8,8 @@ export default class Home extends Component {
     super()
 
     this.state = {
-      counting: false
+      counting: false,
+      seconds: 0
     }
 
     this.changeCounting = this.changeCounting.bind(this)
@@ -18,6 +19,22 @@ export default class Home extends Component {
     this.setState({
       counting: !this.state.counting
     })
+  }
+
+  componentDidMount() {
+    this.interval = setInterval(this.tick.bind(this), 1000)
+  }
+
+  tick() {
+    if (this.state.counting) {
+      this.setState({
+        seconds: this.state.seconds + 1
+      })
+    }
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
   }
 
   render() {
@@ -32,6 +49,9 @@ export default class Home extends Component {
       <div>
         <Box className='trackerBox'>
           <div className={btnClass} onClick={this.changeCounting}>
+          </div>
+          <div className='timeInterval'>
+            {this.state.seconds}
           </div>
         </Box>
         <div>

@@ -140,7 +140,7 @@ gulp.task('build-server', (done) => {
 
 gulp.task('build', ['build-client', 'build-server'])
 
-gulp.task('build-production', ['build-client-production', 'build-server'], () => {
+gulp.task('build-production', ['set-prod-node-env', 'build-client-production', 'build-server'], () => {
   gulp.src('./package.json')
     .pipe(replace('build/index.js', 'index.js'))
     .pipe(gulp.dest('./build'))
@@ -204,7 +204,7 @@ gulp.task('serve', ['set-dev-node-env', 'build', 'watch'], () => {
 /* These are the packaging tasks! */
 gulp.task('package-osx', ['build-production'], () => {
   return gulp.src('./build/**')
-    .pipe(electronPackager({ version: electronVersion, platform: 'darwin', icon: 'assets/osx.icns' }))
+    .pipe(electronPackager({ version: electronVersion, platform: 'darwin', icon: 'app/assets/osx.icns' }))
     .pipe(symdest('release'))
 })
 
