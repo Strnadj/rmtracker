@@ -1,0 +1,56 @@
+@import "modules/variables";
+
+/** Styles */
+@import "partials/settings";
+@import "partials/home";
+
+/** Vendor */
+@import "vendor/helper";
+@import "vendor/pe_icon_7";
+
+body {
+  padding: 0;
+  margin: 0;
+  font-family: $font;
+
+  h1, h2, h3, h4, div, p {
+    font-family: $font;
+  }
+}
+
+.topbar {
+  background-color: rgba(0, 0, 0, 0.0392157);
+  display: table;
+  width: 100%;
+
+  & > div, & > h1 {
+    display: table-cell;
+    padding: 10px;
+  }
+
+  h1 {
+    margin: 0;
+    color: rgb(0, 0, 0);
+    font-size: 1.3rem;
+  }
+
+  .buttons {
+    text-align: right;
+
+    a {
+      text-decoration: none;
+      color: darkgray;
+      font-size: 1.7rem;
+      margin-left: 5px;
+
+      &:hover {
+        color: black;
+        transition: .3s ease;
+      }
+    }
+  }
+}
+
+.body {
+  margin: 10px;
+}

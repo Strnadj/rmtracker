@@ -1,0 +1,14 @@
+.trackerBox {
+  text-align: center;
+
+  .counting {
+    font-size: 4rem;
+    margin: 20px 0px;
+    transition: color .3s ease;
+    font-weight: bold;
+  }
+
+  .running {
+    color: red;
+  }
+}
