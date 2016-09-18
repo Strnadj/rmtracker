@@ -1,53 +1,79 @@
 import React, { Component, PropTypes } from 'react'
-import { Link } from 'react-router'
-import { Box, Text, TextInput, Button } from 'react-desktop/macOs'
+import { Box, TextInput, Button } from 'react-desktop/macOs'
+import { connect } from 'react-redux'
+import { bindActionCreators } from 'redux'
+import * as actionCreators from '../actions/settings'
 
 class Settings extends Component {
   static propTypes = {
-    setToken: PropTypes.func.isRequired,
-    setUrl: PropTypes.func.isRequired,
-    checkSettings: PropTypes.func.isRequired
+    setSettings: PropTypes.func.isRequired,
+    url: PropTypes.string,
+    token: PropTypes.string
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      url: props.url,
+      token: props.token
+    }
+  }
+
+  saveSettings = (e) => {
+    e.preventDefault()
+
+    this.props.setSettings({
+      url: this.state.url,
+      token: this.state.token
+    })
+  }
+
+  setUrl = (e) => {
+    this.setState({
+      url: e.target.value
+    })
+  }
+
+  setToken = (e) => {
+    this.setState({
+      token: e.target.value
+    })
   }
 
   render() {
+    const { url, token } = this.state
+
     return (
       <div>
         <Box label='Redmine Configuration' padding='10px 10px'>
-          <TextInput ref='input' label='Url' placeholder='http://redmine.org/' />
-          <TextInput ref='input' label='Token' placeholder='ADLKJSDF2930302' margin='10px 0px' />
+          <TextInput ref='input' label='Url' defaultValue={url} onChange={this.setUrl} />
+          <TextInput ref='input' label='Token' defaultValue={token} margin='10px 0px' onChange={this.setToken} />
 
           <div className='testSettings'>
-            <Button onClick={() => console.log('Test')}>
+            <Button onClick={this.saveSettings}>
               Test settings
             </Button>
           </div>
         </Box>
       </div>
     );
-   //const { increment, incrementIfOdd, incrementAsync, decrement, counter } = this.props;
-   //return (
-   //  <div>
-   //    <div className={styles.backButton}>
-   //      <Link to="/">
-   //        <i className="fa fa-arrow-left fa-3x" />
-   //      </Link>
-   //    </div>
-   //    <div className={`counter ${styles.counter}`}>
-   //      {counter}
-   //    </div>
-   //    <div className={styles.btnGroup}>
-   //      <button className={styles.btn} onClick={increment}>
-   //        <i className="fa fa-plus"></i>
-   //      </button>
-   //      <button className={styles.btn} onClick={decrement}>
-   //        <i className="fa fa-minus"></i>
-   //      </button>
-   //      <button className={styles.btn} onClick={incrementIfOdd}>odd</button>
-   //      <button className={styles.btn} onClick={() => incrementAsync()}>async</button>
-   //    </div>
-   //  </div>
-   //);
   }
 }
 
-export default Settings;
+function mapStateToProps(state) {
+  const settings = state.get('settings')
+
+  return {
+    url: settings.get('url'),
+    token: settings.get('token')
+  }
+}
+
+function mapDispatchToProps(dispatch) {
+  return {
+    setSettings: bindActionCreators(actionCreators.setSettings, dispatch)
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Settings)

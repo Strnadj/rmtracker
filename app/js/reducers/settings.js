@@ -1,11 +1,18 @@
-import { SET_URL, SET_TOKEN } from '../actions/settings'
+import Immutable from 'immutable'
+import { SAVE_SETTINGS } from '../constants/actions'
 
-export default function counter(state = 0, action) {
+const initialState = Immutable.fromJS({
+  url: 'http://localhost:3000',
+  token: '5be4277f898319aba70beffc1703b09c744e616f'
+})
+
+export default function settings(state = initialState, action) {
   switch (action.type) {
-    case SET_URL:
-      return state + 1
-    case SET_TOKEN:
-      return state - 1
+    case SAVE_SETTINGS:
+      return state.merge({
+        url: action.url,
+        token: action.token
+      })
     default:
       return state
   }

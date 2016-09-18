@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Box } from 'react-desktop/macOs'
 
-var classNames = require('classnames')
+const classNames = require('classnames')
 
 export default class Home extends Component {
   constructor() {
@@ -11,30 +11,28 @@ export default class Home extends Component {
       counting: false,
       seconds: 0
     }
-
-    this.changeCounting = this.changeCounting.bind(this)
   }
 
-  changeCounting() {
+  componentDidMount() {
+    this.interval = setInterval(this.tick, 1000)
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval);
+  }
+
+  changeCounting = () => {
     this.setState({
       counting: !this.state.counting
     })
   }
 
-  componentDidMount() {
-    this.interval = setInterval(this.tick.bind(this), 1000)
-  }
-
-  tick() {
+  tick = () => {
     if (this.state.counting) {
       this.setState({
         seconds: this.state.seconds + 1
       })
     }
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.interval);
   }
 
   render() {

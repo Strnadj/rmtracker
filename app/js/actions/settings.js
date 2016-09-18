@@ -1,34 +1,35 @@
-export const SET_URL = 'SET_URL'
-export const SET_TOKEN = 'SET_TOKEN'
+import * as UiActions from './ui_actions'
+import { SAVE_SETTINGS } from '../constants/actions'
+import RedmineClient from '../utils/redmineClient'
+import { fetchProjects } from './redmine'
 
-export function setUrl() {
+// New redmine client
+const client = new RedmineClient()
+
+export function saveSettings(url, token) {
   return {
-    type: SET_URL
+    type: SAVE_SETTINGS,
+    url,
+    token
   }
 }
 
-export function setToken() {
-  return {
-    type: SET_TOKEN
+export function setSettings(data) {
+  return dispatch => {
+    // Block UI with message
+    dispatch(UiActions.blockUi('Test settings'))
+
+    // Set connection settings
+    dispatch(saveSettings(data.url, data.token))
+
+    // Set connection to client
+    client.setUrl(data.url)
+    client.setToken(data.token)
+
+    // Call client.getUser
+    client.getUserInfo()
+
+    // Try to fetch projects
+    dispatch(fetchProjects())
   }
 }
-
-// export function incrementIfOdd() {
-//   return (dispatch, getState) => {
-//     const { counter } = getState();
-//
-//     if (counter % 2 === 0) {
-//       return;
-//     }
-//
-//     dispatch(increment());
-//   };
-// }
-//
-// export function incrementAsync(delay = 1000) {
-//   return dispatch => {
-//     setTimeout(() => {
-//       dispatch(increment());
-//     }, delay);
-//   };
-// }

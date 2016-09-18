@@ -8,8 +8,8 @@ import SettingsPage from './containers/SettingsPage'
 
 // Main app
 export default (
-  <Route path='/' component={App}>
+  <Route path="/" component={App}>
     <IndexRoute component={HomePage} />
-    <Route path='/settings' component={SettingsPage} />
+    <Route path="/settings" component={SettingsPage} />
   </Route>
 )

@@ -1,10 +1,12 @@
-import { combineReducers } from 'redux'
-import { routerReducer as routing } from 'react-router-redux'
+import { combineReducers } from 'redux-immutable'
 
+import ui from './ui'
 import settings from './settings'
+import routing from './routing'
 
 const rootReducer = combineReducers({
   settings,
+  ui,
   routing
 })
 

@@ -1,44 +1,51 @@
 'use strict'
 
-import { app, BrowserWindow, Menu, shell, Tray } from 'electron'
+import { app, BrowserWindow, Menu, Tray } from 'electron'
 
 const path = require('path')
 
 // To use async await
 if (process.env.NODE_ENV === 'development') {
+  /* eslint-disable global-require, import/no-extraneous-dependencies */
   require('babel-core/register')
   require('babel-polyfill')
+  /* eslint-enable global-require, import/no-extraneous-dependencies */
 }
 
 // Install devtools into console
 const installExtensions = async () => {
-  const installer = require('electron-devtools-installer'); // eslint-disable-line global-require
+  /* eslint-disable global-require, import/no-extraneous-dependencies */
+  const installer = require('electron-devtools-installer')
+  /* eslint-enable global-require, import/no-extraneous-dependencies */
+
   const extensions = [
     'REACT_DEVELOPER_TOOLS',
     'REDUX_DEVTOOLS'
-  ];
+  ]
+
   for (const name of extensions) {
     try {
-      await installer.default(installer[name]);
+      await installer.default(installer[name])
     } catch (e) {} // eslint-disable-line
   }
-};
+}
 
 // Tray icon
 let appIcon = null
-let createTray = () => {
+const createTray = () => {
   const iconName = process.platform === 'win32' ? 'windows-icon.png' : 'assets/iconTemplate.png'
   const iconPath = path.join(__dirname, iconName)
   appIcon = new Tray(iconPath)
 
   const contextMenu = Menu.buildFromTemplate([{
     label: 'Remove',
-    click: function () {
+    click() {
       event.sender.send('tray-removed')
       appIcon.destroy()
     }
   }])
-  appIcon.setToolTip('Electron Demo in the tray.')
+
+  appIcon.setToolTip('Redmine Time Tracker')
   appIcon.setContextMenu(contextMenu)
 }
 
@@ -46,9 +53,12 @@ let createTray = () => {
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
 
-let createWindow = () => {
+const createWindow = () => {
   // Create the browser window.
-  mainWindow = new BrowserWindow({width: 320, height: 460})
+  mainWindow = new BrowserWindow({
+    width: 320,
+    height: 460
+  })
 
   // and load the index.html of the app.
   mainWindow.loadURL(path.join('file://', __dirname, '/index.html'))
@@ -66,17 +76,18 @@ let createWindow = () => {
 
   // Open context menu in development mode
   if (process.env.NODE_ENV === 'development') {
-    mainWindow.openDevTools();
+    mainWindow.openDevTools()
+
     mainWindow.webContents.on('context-menu', (e, props) => {
-      const { x, y } = props;
+      const { x, y } = props
 
       Menu.buildFromTemplate([{
         label: 'Inspect element',
         click() {
-          mainWindow.inspectElement(x, y);
+          mainWindow.inspectElement(x, y)
         }
-      }]).popup(mainWindow);
-    });
+      }]).popup(mainWindow)
+    })
   }
 }
 
@@ -84,11 +95,11 @@ let createWindow = () => {
 // initialization and is ready to create browser windows.
 app.on('ready', async () => {
   if (process.env.NODE_ENV === 'development') {
-    await installExtensions();
+    await installExtensions()
   }
 
-  createWindow();
-  createTray();
+  createWindow()
+  createTray()
 })
 
 // Quit when all windows are closed.

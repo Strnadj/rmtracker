@@ -130,7 +130,7 @@ gulp.task('build-server', (done) => {
 
     let tasks = files.map((entry) => {
       return gulp.src(entry)
-        .pipe(babel({ presets: ['es2015'] }))
+        .pipe(babel({ presets: ['es2015', 'stage-0'] }))
         .pipe(gulp.dest('./build'))
     })
 
