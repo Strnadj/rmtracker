@@ -1,9 +1,6 @@
 import { SET_PROJECTS } from '../constants/actions'
-import RedmineClient from '../utils/redmineClient'
+import client from '../utils/redmineClient'
 import * as UiActions from './ui_actions'
-
-// New redmine client
-const client = new RedmineClient()
 
 export function setProjects(projects) {
   return {

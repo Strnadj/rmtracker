@@ -1,10 +1,7 @@
 import * as UiActions from './ui_actions'
 import { SAVE_SETTINGS } from '../constants/actions'
-import RedmineClient from '../utils/redmineClient'
+import client from '../utils/redmineClient'
 import { fetchProjects } from './redmine'
-
-// New redmine client
-const client = new RedmineClient()
 
 export function saveSettings(url, token) {
   return {

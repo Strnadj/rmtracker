@@ -3,7 +3,7 @@ import request from 'request'
 /**
  * Redmine Client is singleton class.
  */
-export default class RedmineClient {
+class RedmineClient {
   static instance
 
   /**
@@ -96,3 +96,6 @@ export default class RedmineClient {
     });
   }
 }
+
+/** Get RM instance */
+export default new RedmineClient('', '');
