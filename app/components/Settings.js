@@ -6,7 +6,7 @@ import * as actionCreators from '../actions/settings'
 
 class Settings extends Component {
   static propTypes = {
-    setSettings: PropTypes.func.isRequired,
+    testSettings: PropTypes.func.isRequired,
     url: PropTypes.string,
     token: PropTypes.string
   }
@@ -23,7 +23,7 @@ class Settings extends Component {
   saveSettings = (e) => {
     e.preventDefault()
 
-    this.props.setSettings({
+    this.props.testSettings({
       url: this.state.url,
       token: this.state.token
     })
@@ -72,7 +72,7 @@ function mapStateToProps(state) {
 
 function mapDispatchToProps(dispatch) {
   return {
-    setSettings: bindActionCreators(actionCreators.setSettings, dispatch)
+    testSettings: bindActionCreators(actionCreators.testSettings, dispatch)
   }
 }
 

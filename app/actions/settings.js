@@ -11,7 +11,7 @@ export function saveSettings(url, token) {
   }
 }
 
-export function setSettings(data) {
+export function testSettings(data) {
   return dispatch => {
     // Block UI with message
     dispatch(UiActions.blockUi('Test settings'))
@@ -24,7 +24,7 @@ export function setSettings(data) {
     client.setToken(data.token)
 
     // Try to fetch projects
-    dispatch(fetchProjects())
+    dispatch(fetchProjects('/'))
 
     // nothing to do
   }

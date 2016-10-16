@@ -79,7 +79,7 @@ class RedmineClient {
 
         // Return map object
         resolve(projects)
-      })
+      }, error => reject(error))
     })
   }
 
