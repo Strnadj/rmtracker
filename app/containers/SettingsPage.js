@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 
 // Components and actions
 import Settings from '../components/Settings'
-import * as SettingsActions from '../actions/Settings'
+import * as SettingsActions from '../actions/settings'
 
 function mapStateToProps(state) {
   return {

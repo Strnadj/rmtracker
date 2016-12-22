@@ -3,6 +3,7 @@ import { Box, TextInput, Button } from 'react-desktop/macOs'
 import { connect } from 'react-redux'
 import { bindActionCreators } from 'redux'
 import * as actionCreators from '../actions/settings'
+import SettingsStorage from '../utils/settingsStorage'
 
 class Settings extends Component {
   static propTypes = {

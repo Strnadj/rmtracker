@@ -15,7 +15,7 @@ export default class SettingsStorage {
       this._has(key).then(val => {
         if (val) {
           // Return loaded value
-          return _get(key)
+          SettingsStorage._get(key).then(val => resolve(val), reject => (val));
         } else {
           // Return default value
           return resolve(defaults)
@@ -27,8 +27,8 @@ export default class SettingsStorage {
 
   /**
    * Override methods to return promise
-   * instead of call cb*/
-
+   * instead of call cb
+   */
   static _get(key) {
     return new Promise((resolve, reject) => {
       storage.get(key, (error, data) => {
@@ -53,7 +53,7 @@ export default class SettingsStorage {
     })
   }
 
-  static _set(key, value) {
+  static set(key, value) {
     return new Promise((resolve, reject) => {
       storage.set(key, value, (error) => {
         if (error) {

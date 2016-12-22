@@ -2,6 +2,7 @@ import * as UiActions from './ui_actions'
 import { SAVE_SETTINGS } from '../constants/actions'
 import client from '../utils/redmineClient'
 import { fetchProjects } from './redmine'
+import SettingsStorage from '../utils/settingsStorage'
 
 export function saveSettings(url, token) {
   return {
@@ -16,15 +17,23 @@ export function testSettings(data) {
     // Block UI with message
     dispatch(UiActions.blockUi('Test settings'))
 
-    // Set connection settings
-    dispatch(saveSettings(data.url, data.token))
+    // Save settings
+    let promise = SettingsStorage.set('redmine', {
+      url: data.url,
+      token: data.token
+    });
 
-    // Set connection to client
-    client.setUrl(data.url)
-    client.setToken(data.token)
+    promise.then(val => {
+      // Set connection settings
+      dispatch(saveSettings(data.url, data.token))
 
-    // Try to fetch projects
-    dispatch(fetchProjects('/'))
+      // Set connection to client
+      client.setUrl(data.url)
+      client.setToken(data.token)
+
+      // Try to fetch projects
+      dispatch(fetchProjects('/'))
+    });
 
     // nothing to do
   }

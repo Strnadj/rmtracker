@@ -4,7 +4,7 @@ import { Provider } from 'react-redux'
 import { Router, hashHistory } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import Immutable from 'immutable'
-import SettingsStorage from './utils/SettingsStorage'
+import SettingsStorage from './utils/settingsStorage'
 import client from './utils/redmineClient'
 
 // Styles
@@ -15,21 +15,21 @@ import routes from './routes'
 import configureStore from './store/configureStore'
 
 // Get values
-let settings = SettingsStorage.get('redmine', {
-  url: 'http://localhost:4000',
-  token: '8db7017e015b5cf39f488100b4e278c4896b64c3'
+let settings = SettingsStorage.get('settings', {
+  settings: {
+    url: 'http://localhost:4000',
+    token: '8db7017e015b5cf39f488100b4e278c4896b64c3'
+  }
 })
 
 // Load settings
 settings.then(value => {
   // Default state
-  const initialState = Immutable.fromJS({
-    settings: value
-  })
+  const initialState = Immutable.fromJS(value);
 
   // Set client settings
-  client.setUrl(value.url)
-  client.setToken(value.token)
+  client.setUrl(value.settings.url)
+  client.setToken(value.settings.token)
 
   // Create store
   const store = configureStore(initialState)

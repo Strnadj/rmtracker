@@ -1,5 +1,6 @@
-import request from 'request'
-import Immutable from 'Immutable'
+import request from 'request';
+import Immutable from 'Immutable';
+import querystring from 'querystring';
 
 /**
  * Redmine Client is singleton class.
@@ -64,38 +65,59 @@ class RedmineClient {
   /**
    * Return an array of available projects.
    *
+   * @param query {Object} Query
    * @return {Promise} Projects
    */
-  getProjects() {
+  getProjects(data = null) {
+    // Prepare query
+    // "set_filter"=>"1", "f"=>["status_id", "subject", ""], "op"=>{"status_id"=>"o", "subject"=>"~"}, "v"=>{"subject"=>["Ahoj"]}
+    //let query = {
+      //page: 1
+    //};
+
+    //if (data.name) {
+      //query.set_filter = 1;
+      //query['f[]'] = [ 'name' ]
+      //query.op = { 'name': '~' }
+      //query.v  = { 'name[]': [ data.name ] }
+    //}
+
+    //console.log(query);
+
+    // return new promise
     return new Promise((resolve, reject) => {
       this.request('GET', '/projects.json', {}).then(projects => {
         // Get List of projects
-        projects = projects.get('projects')
+        const limit = projects.get('limit');
+        const totalCount = projects.get('total_count');
 
-        // Transform to Map project_id => { data }
-        projects = Immutable.Map(
-          projects.map(v => [ v.get('id'), v ])
-        )
+        // Total pages
+        const pages = 10; // (totalCount / limit) + 1;
 
-        // Return map object
-        resolve(projects)
+        // Promises for page
+        const promises = [];
+
+        for (let i = 1; i < pages; i++) {
+          promises.push(
+            this.request('GET', '/projects.json', { page: i })
+          );
+        }
+
+        // Wait for all
+        Promise.all(promises).then(arr => {
+          // Map & flatten
+          arr = _.map(arr, project => project.get('projects').toArray());
+          arr = _.flatten(arr);
+
+          // There are arr projects
+          let projects = Immutable.Map(
+            _.map(arr, project => [ project.get('id'), project ])
+          );
+
+          resolve(projects);
+        });
       }, error => reject(error))
     })
-  }
-
-  /**
-   * Create url to redmine.
-   *
-   * @param path {String} Path
-   * @param params {Object} Objects
-   * @return {String} New url
-   */
-  createUrl(path, params) {
-    if (path.slice(0, 1) !== '/') {
-      path = '/' + path
-    }
-    return this.url +
-      path // + (params ? ('?' + querystring.stringify(params)) : '');
   }
 
   /**
@@ -104,19 +126,37 @@ class RedmineClient {
    * @return {Promise} Promise with response.
    */
   request(method, path, params) {
+    // Generate options
     const options = {
-      url: this.createUrl(path, params),
+      baseUrl: this.url,
+      url: path,
       headers: {
         'X-Redmine-API-Key': this.token
       },
       method
     };
 
-    console.log("[Redmine] Call");
-    console.log("[Redmine] URL: " + this.createUrl(path, params));
+    // Add query string
+    if (params && method == 'GET') {
+      options.qs = params;
+    }
+
+    // Generate url
+    console.log(`[Redmine] [${method}] ${this.url}${path}`);
 
     return new Promise((resolve, reject) => {
       request(options, (err, res, body) => {
+        // Parse body
+        let parsedBody = null;
+
+        try {
+          parsedBody = JSON.parse(body);
+        } catch (e) {
+          if (!err) {
+            err = e;
+          }
+        }
+
         if (err) {
           console.log("[Redmine] Error: ")
           console.log(err)
@@ -124,9 +164,10 @@ class RedmineClient {
         } else {
           // Response
           console.log("[Redmine] Response OK")
+          console.log(parsedBody);
 
           // Parse body & create immutable
-          body = Immutable.fromJS(JSON.parse(body))
+          body = Immutable.fromJS(parsedBody)
 
           // Return body
           resolve(body)

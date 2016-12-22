@@ -10,13 +10,13 @@ export function setProjects(projects) {
   }
 }
 
-export function fetchProjects(redirect) {
+export function fetchProjects(redirect, name) {
   return dispatch => {
     // Block UI with message
     dispatch(UiActions.blockUi('Fetching projects'))
 
     // Get projects
-    client.getProjects().then(projects => {
+    client.getProjects({ name: name }).then(projects => {
       // Set projects
       dispatch(setProjects(projects))
 
